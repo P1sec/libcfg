@@ -326,17 +326,18 @@ Arguments:
   * `cfg`:      entry for all configuration parameters;
 ******************************************************************************/
 void cfg_print_help(cfg_t *cfg) {
-    unsigned int dash_size_overload = 13;
-    char buffer[CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload];
-    bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload);
+    uint8_t used_len = 0;
+    int dash_size_overload = 13;
+    char buffer[CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN];
+    bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN);
     if (cfg && !CFG_IS_ERROR(cfg)) {
         if (cfg->npar > 0) {
             const cfg_param_valid_t *param = (cfg_param_valid_t *)cfg->params;
             printf("Option%c:\n", cfg->npar > 1 ? 's' : '\0');
             for (size_t i = 0; i < cfg->npar; ++i) {
-                cfg_print_param(buffer, &param[i]);
+                used_len = cfg_print_param(buffer, &param[i]);
                 printf("%s\n", buffer);
-                bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload);
+                bzero(buffer, used_len);
             }
             printf("\n");
         }
@@ -347,9 +348,9 @@ void cfg_print_help(cfg_t *cfg) {
             const cfg_func_valid_t *param = (cfg_func_valid_t *)cfg->funcs;
             printf("Function%c:\n", cfg->nfunc > 1 ? 's' : '\0');
             for (size_t i = 0; i < cfg->nfunc; ++i) {
-                cfg_print_func(buffer, &param[i]);
+                used_len = cfg_print_func(buffer, &param[i]);
                 printf("%s\n", buffer);
-                bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload);
+                bzero(buffer, used_len);
             }
         }
         else {
@@ -449,18 +450,6 @@ int cfg_set_params(cfg_t *cfg, const cfg_param_t *param, const int npar) {
     par->name = str;
     par->nlen = j + 1;       /* length of name with the ending '\0' */
 
-    /* Verify the help message. */
-    str = param[i].help;
-    j = 0;
-    while (str[j] != '\0') {
-      if (++j >= CFG_MAX_HELP_LEN) {            /* no null termination */
-        cfg_msg(cfg, "invalid help for parameter", par->name);
-        return CFG_ERRNO(cfg) = CFG_ERR_INPUT;
-      }
-    }
-    par->help = str;
-    par->hlen = j + 1;       /* length of help with the ending '\0' */
-
     /* Verify the data type. */
     if (CFG_DTYPE_INVALID(param[i].dtype)) {
       cfg_msg(cfg, "invalid data type for parameter", par->name);
@@ -474,7 +463,12 @@ int cfg_set_params(cfg_t *cfg, const cfg_param_t *param, const int npar) {
     par->var = param[i].var;
 
     /* Verify command line options. */
-    if (isalpha(param[i].opt)) par->opt = param[i].opt;
+    char opt[3] = { 0 };
+    if (isalpha(param[i].opt)) {
+      par->opt = param[i].opt;
+      opt[0] = '-';
+      opt[1] = par->opt;
+    }
     else if (param[i].opt) {
       cfg_msg(cfg, "invalid short command line option for parameter",
           par->name);
@@ -503,6 +497,19 @@ int cfg_set_params(cfg_t *cfg, const cfg_param_t *param, const int npar) {
 
     tmp[0] = par->opt;
     tmp[1] = '\0';
+
+    /* Verify the help message. */
+    str = param[i].help;
+    j = 0;
+    while (str[j] != '\0') {
+      if (++j >= CFG_MAX_HELP_LEN) {            /* no null termination */
+        cfg_msg(cfg, "invalid help (too long) for parameter", par->lopt ? par->lopt : opt);
+        return CFG_ERRNO(cfg) = CFG_ERR_INPUT;
+      }
+    }
+    par->help = str;
+    par->hlen = j + 1;       /* length of help with the ending '\0' */
+
     /* Check duplicates with the registered parameters. */
     for (j = 0; j < cfg->npar + i; j++) {
       if (!strncmp(par->name, vpar[j].name, par->nlen)) {
@@ -582,7 +589,12 @@ int cfg_set_funcs(cfg_t *cfg, const cfg_func_t *func, const int nfunc) {
     sprintf(tmp, "%d", i);
 
     /* Verify the command line options. */
-    if (isalpha(func[i].opt)) fun->opt = func[i].opt;
+    char opt[3] = { 0 };
+    if (isalpha(func[i].opt)) {
+      fun->opt = func[i].opt;
+      opt[0] = '-';
+      opt[1] = (char)fun->opt;
+    }
     else if (func[i].opt)
       cfg_msg(cfg, "invalid short command line option for function index", tmp);
 
@@ -622,16 +634,16 @@ int cfg_set_funcs(cfg_t *cfg, const cfg_func_t *func, const int nfunc) {
 
     /* Verify the help message. */
     if (func[i].help) {
-        str = func[i].help;
-        j = 0;
-        while (str[j] != '\0') {
-            if (++j >= CFG_MAX_HELP_LEN) {            /* no null termination */
-                cfg_msg(cfg, "invalid help for function", tmp);
-                return CFG_ERRNO(cfg) = CFG_ERR_INPUT;
-            }
+      str = func[i].help;
+      j = 0;
+      while (str[j] != '\0') {
+        if (++j >= CFG_MAX_HELP_LEN) {            /* no null termination */
+          cfg_msg(cfg, "invalid help (too long) for function", fun->lopt ? fun->lopt : opt);
+          return CFG_ERRNO(cfg) = CFG_ERR_INPUT;
         }
-        fun->help = str;
-        fun->hlen = j + 1;       /* length of help with the ending '\0' */
+      }
+      fun->help = str;
+      fun->hlen = j + 1;       /* length of help with the ending '\0' */
     }
 
     /* Check duplicates with the registered functions. */
