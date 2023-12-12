@@ -326,37 +326,37 @@ Arguments:
   * `cfg`:      entry for all configuration parameters;
 ******************************************************************************/
 void cfg_print_help(cfg_t *cfg) {
-    size_t used_len = 0;
-    int dash_size_overload = 13;
-    char buffer[CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN];
-    bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN);
-    if (cfg && !CFG_IS_ERROR(cfg)) {
-        if (cfg->npar > 0) {
-            const cfg_param_valid_t *param = (cfg_param_valid_t *)cfg->params;
-            printf("Option%c:\n", cfg->npar > 1 ? 's' : '\0');
-            for (size_t i = 0; i < cfg->npar; ++i) {
-                used_len = cfg_print_param(buffer, &param[i]);
-                printf("%s\n", buffer);
-                bzero(buffer, used_len);
-            }
-            printf("\n");
-        }
-        else {
-            cfg_msg(cfg, "the parameter list is not set", NULL);
-        }
-        if (cfg->nfunc > 0) {
-            const cfg_func_valid_t *param = (cfg_func_valid_t *)cfg->funcs;
-            printf("Function%c:\n", cfg->nfunc > 1 ? 's' : '\0');
-            for (size_t i = 0; i < cfg->nfunc; ++i) {
-                used_len = cfg_print_func(buffer, &param[i]);
-                printf("%s\n", buffer);
-                bzero(buffer, used_len);
-            }
-        }
-        else {
-            cfg_msg(cfg, "the function list is not set", NULL);
-        }
+  size_t used_len = 0;
+  int dash_size_overload = 13;
+  char buffer[CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN];
+  bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN);
+  if (cfg && !CFG_IS_ERROR(cfg)) {
+    if (cfg->npar > 0) {
+      const cfg_param_valid_t *param = (cfg_param_valid_t *)cfg->params;
+      printf("Option%c:\n", cfg->npar > 1 ? 's' : '\0');
+      for (size_t i = 0; i < cfg->npar; ++i) {
+        used_len = cfg_print_param(buffer, &param[i]);
+        printf("%s\n", buffer);
+        bzero(buffer, used_len);
+      }
+      printf("\n");
     }
+    else {
+      cfg_msg(cfg, "the parameter list is not set", NULL);
+    }
+    if (cfg->nfunc > 0) {
+      const cfg_func_valid_t *param = (cfg_func_valid_t *)cfg->funcs;
+      printf("Function%c:\n", cfg->nfunc > 1 ? 's' : '\0');
+      for (size_t i = 0; i < cfg->nfunc; ++i) {
+        used_len = cfg_print_func(buffer, &param[i]);
+        printf("%s\n", buffer);
+        bzero(buffer, used_len);
+      }
+    }
+    else {
+      cfg_msg(cfg, "the function list is not set", NULL);
+    }
+  }
 }
 
 /******************************************************************************
