@@ -261,8 +261,8 @@ Arguments:
 Return:
   Output string length.
 ******************************************************************************/
-static unsigned int cfg_print_help_line(char *buffer, const cfg_help_line_t *help_line) {
-    unsigned int len = 0;
+static size_t cfg_print_help_line(char *buffer, const cfg_help_line_t *help_line) {
+    size_t len = 0;
     if (help_line->opt) {
         len += sprintf(buffer, " -%c", help_line->opt);
         if (help_line->lopt) {
@@ -290,7 +290,7 @@ Arguments:
 Return:
   Output string length.
 ******************************************************************************/
-static unsigned int cfg_print_param(char *buffer, const cfg_param_valid_t *param) {
+static size_t cfg_print_param(char *buffer, const cfg_param_valid_t *param) {
   cfg_help_line_t *help_content = malloc(sizeof(cfg_help_line_t));
   help_content->dtype = param->dtype;
   help_content->opt = param->opt;
@@ -326,7 +326,7 @@ Arguments:
   * `cfg`:      entry for all configuration parameters;
 ******************************************************************************/
 void cfg_print_help(cfg_t *cfg) {
-    uint8_t used_len = 0;
+    size_t used_len = 0;
     int dash_size_overload = 13;
     char buffer[CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN];
     bzero(buffer, CFG_MAX_LOPT_LEN + CFG_MAX_NAME_LEN + dash_size_overload + CFG_MAX_HELP_LEN);
