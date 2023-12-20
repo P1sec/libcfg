@@ -830,7 +830,7 @@ static cfg_parse_return_t cfg_parse_line(char *line, const size_t len,
       return CFG_PARSE_PASS;
     case CFG_PARSE_ARRAY_NEWLINE:
       *newline = ' ';
-#if __STDC_VERSION__ > 201112L
+#if __STDC_VERSION__ > 201710L
       [[fallthrough]];
 #endif
     case CFG_PARSE_CLEAN:
@@ -1436,7 +1436,7 @@ int cfg_read_file(cfg_t *cfg, const char *fname, const int prior) {
         case CFG_PARSE_ERROR:
           sprintf(msg, "%zu", nline);
           cfg_msg(cfg, "invalid configuration entry at line", msg);
-#if __STDC_VERSION__ > 201112L
+#if __STDC_VERSION__ > 201710L
           [[fallthrough]];
 #endif
         case CFG_PARSE_PASS:

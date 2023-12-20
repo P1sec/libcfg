@@ -2,7 +2,7 @@ SUBDIRS = .
 
 SOURCE_FILES = libcfg.c
 
-AM_CPPFLAGS = -I$(top_srcdir) -Wall -Werror -Wshadow -Wduplicated-cond -Wunused-parameter -fstack-protector
+AM_CPPFLAGS = -I$(top_srcdir) -Wall -Werror -Wshadow -Wduplicated-cond -Wunused-parameter -fstack-protector -Wimplicit-fallthrough=0
 
 if ENABLE_COVERAGE
 AM_CPPFLAGS += --coverage
