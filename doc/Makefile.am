@@ -15,8 +15,8 @@ DOC_STAMPS = html-build.stamp
 
 DOC_DIR = $(HTML_DIR)
 INCDIR = ../src
-LIBCFG_HEADER_SRC = \
-	$(INCDIR)/libcfg.h
+LIBCFGCLI_HEADER_SRC = \
+	$(INCDIR)/libcfgcli.h
 
 .PHONY: all-local doxygen
 

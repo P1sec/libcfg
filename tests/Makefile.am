@@ -11,4 +11,4 @@ check_PROGRAMS = $(TESTS)
 
 example_SOURCES = example.h example.c
 example_CPPFLAGS = $(AM_CPPFLAGS) -DDEFAULT_CONF_FILE="\"$(srcdir)/input.conf\""
-example_LDADD = ../src/libcfg.la
+example_LDADD = ../src/libcfgcli.la

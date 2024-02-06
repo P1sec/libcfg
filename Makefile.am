@@ -7,7 +7,7 @@ EXTRA_DIST = libtool ltmain.sh
 ACLOCAL_AMFLAGS = -Im4
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libcfg.pc
+pkgconfig_DATA = libcfgcli.pc
 
 if ENABLE_COVERAGE
 if HAVE_GCOVR

@@ -7,7 +7,7 @@
 # PATCH version when you make backwards-compatible bug fixes.
 # Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
 m4_define([version_major], 1)
-m4_define([version_minor], 1)
+m4_define([version_minor], 2)
 m4_define([version_patch], 0)
 
 # Libtool versioning: see https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
@@ -17,13 +17,13 @@ m4_define([lt_age], 0)
 m4_define([lt_version_info], [lt_current:lt_revision:lt_age])
 
 AC_PREREQ([2.69])
-AC_INIT([libcfg],
+AC_INIT([libcfgcli],
         [version_major.version_minor.version_patch],
-        [gregory.david@p1sec.com],
+        [dev@groolot.net],
         [],
-        [https://github.com/p1-gdd/libcfg])
+        [https://framagit.org/groolot-association/libcfgcli])
 AC_LANG([C])
-AC_CONFIG_SRCDIR([src/libcfg.c])
+AC_CONFIG_SRCDIR([src/libcfgcli.c])
 AC_CONFIG_HEADERS([src/autoconf.h])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_MACRO_DIRS([m4])
@@ -35,12 +35,12 @@ AC_CONFIG_FILES([
   tests/Makefile
   doc/Makefile
   doc/Doxyfile
-  libcfg.pc
+  libcfgcli.pc
 ])
-LIBCFG_SO_VERSION=lt_version_info
-AC_SUBST(LIBCFG_SO_VERSION)
+LIBCFGCLI_SO_VERSION=lt_version_info
+AC_SUBST(LIBCFGCLI_SO_VERSION)
 
-AC_DEFINE(LIBCFG_SO_VERSION, [{lt_current, lt_revision, lt_age}],
+AC_DEFINE(LIBCFGCLI_SO_VERSION, [{lt_current, lt_revision, lt_age}],
           [Libtool compatibility version])
 
 # Checks for programs.
@@ -86,7 +86,7 @@ AC_CHECK_HEADER_STDBOOL
 
 # Display some information about this build
 echo
-echo About this libcfg build:
+echo About this libcfgcli build:
 echo
 echo CC=\"$CC\"
 echo CPPFLAGS=\"$CPPFLAGS\"
@@ -102,7 +102,7 @@ echo -n 'Build mode: '
 test x${enable_debug} = xyes && echo DEBUG || echo RELEASE
 echo
 echo We will compile the following things:
-echo '  libcfg.so'
+echo '  libcfgcli.so'
 echo
 
 AC_OUTPUT

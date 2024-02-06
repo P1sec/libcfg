@@ -1,13 +1,13 @@
 /*******************************************************************************
-* example.h: this file is an example for the usage of the libcfg library.
+* example.h: this file is an example for the usage of the libcfgcli library.
 
-* libcfg: C library for parsing command line option and configuration files.
+* libcfgcli: C library for parsing command line option and configuration files.
 
-* Github repository:
-        https://github.com/cheng-zhao/libcfg
+* Gitlab repository:
+        https://framagit.org/groolot-association/libcfgcli
 
 * Copyright (c) 2019 Cheng Zhao <zhaocheng03@gmail.com>
-* Copyright (c) 2022 Gregory David <gregory.david@p1sec.com>
+* Copyright (c) 2023 Gregory David <dev@groolot.net>
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-SOURCE_FILES = libcfg.c
+SOURCE_FILES = libcfgcli.c
 
 AM_CPPFLAGS = -I$(top_srcdir) -Wall -Werror -Wshadow -Wduplicated-cond -Wunused-parameter -fstack-protector -Wimplicit-fallthrough=0
 
@@ -9,14 +9,14 @@ AM_CPPFLAGS += --coverage
 AM_LDFLAGS = --coverage
 endif
 
-lib_LTLIBRARIES = libcfg.la
+lib_LTLIBRARIES = libcfgcli.la
 
-libcfg_la_SOURCES = $(SOURCE_FILES)
-libcfg_la_CFLAGS = $(AM_CPPFLAGS)
-libcfg_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info @LIBCFG_SO_VERSION@
+libcfgcli_la_SOURCES = $(SOURCE_FILES)
+libcfgcli_la_CFLAGS = $(AM_CPPFLAGS)
+libcfgcli_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info @LIBCFGCLI_SO_VERSION@
 
-libcfgincludedir = $(includedir)
-libcfginclude_HEADERS = libcfg.h
+libcfgcliincludedir = $(includedir)
+libcfgcliinclude_HEADERS = libcfgcli.h
 
 clean-local: clean-gcno clean-gcda
 	-rm -f *.orig
