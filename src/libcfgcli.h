@@ -1,12 +1,13 @@
 /*******************************************************************************
-* libcfg.h: this file is part of the libcfg library.
+* libcfgcli.h: this file is part of the libcfgcli library.
 
-* libcfg: C library for parsing command line option and configuration files.
+* libcfgcli: C library for parsing command line option and configuration files.
 
-* Github repository:
-        https://github.com/cheng-zhao/libcfg
+* Gitlab repository:
+        https://framagit.org/groolot-association/libcfgcli
 
 * Copyright (c) 2019 Cheng Zhao <zhaocheng03@gmail.com>
+* Copyright (c) 2023 Gregory David <dev@groolot.net>
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +29,8 @@
 
 *******************************************************************************/
 
-#ifndef _LIBCFG_H_
-#define _LIBCFG_H_
+#ifndef _LIBCFGCLI_H_
+#define _LIBCFGCLI_H_
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -39,46 +40,46 @@
 \*============================================================================*/
 
 typedef enum {
-  CFG_DTYPE_NULL,
-  CFG_DTYPE_BOOL,
-  CFG_DTYPE_CHAR,
-  CFG_DTYPE_INT,
-  CFG_DTYPE_LONG,
-  CFG_DTYPE_FLT,
-  CFG_DTYPE_DBL,
-  CFG_DTYPE_STR,
-  CFG_ARRAY_BOOL,
-  CFG_ARRAY_CHAR,
-  CFG_ARRAY_INT,
-  CFG_ARRAY_LONG,
-  CFG_ARRAY_FLT,
-  CFG_ARRAY_DBL,
-  CFG_ARRAY_STR
-} cfg_dtype_t;
+  CFGCLI_DTYPE_NULL,
+  CFGCLI_DTYPE_BOOL,
+  CFGCLI_DTYPE_CHAR,
+  CFGCLI_DTYPE_INT,
+  CFGCLI_DTYPE_LONG,
+  CFGCLI_DTYPE_FLT,
+  CFGCLI_DTYPE_DBL,
+  CFGCLI_DTYPE_STR,
+  CFGCLI_ARRAY_BOOL,
+  CFGCLI_ARRAY_CHAR,
+  CFGCLI_ARRAY_INT,
+  CFGCLI_ARRAY_LONG,
+  CFGCLI_ARRAY_FLT,
+  CFGCLI_ARRAY_DBL,
+  CFGCLI_ARRAY_STR
+} cfgcli_dtype_t;
 
-#define CFG_DTYPE_INVALID(x)    ((x) < CFG_DTYPE_BOOL || (x) > CFG_ARRAY_STR)
-#define CFG_DTYPE_IS_ARRAY(x)   ((x) >= CFG_ARRAY_BOOL && (x) <= CFG_ARRAY_STR)
+#define CFGCLI_DTYPE_INVALID(x)    ((x) < CFGCLI_DTYPE_BOOL || (x) > CFGCLI_ARRAY_STR)
+#define CFGCLI_DTYPE_IS_ARRAY(x)   ((x) >= CFGCLI_ARRAY_BOOL && (x) <= CFGCLI_ARRAY_STR)
 
 /*============================================================================*\
                          Definitions for string lengths
 \*============================================================================*/
-#define CFG_MAX_NAME_LEN        128
-#define CFG_MAX_LOPT_LEN        128
-#define CFG_MAX_HELP_LEN        1024
-#define CFG_MAX_FILENAME_LEN    1024
+#define CFGCLI_MAX_NAME_LEN        128
+#define CFGCLI_MAX_LOPT_LEN        128
+#define CFGCLI_MAX_HELP_LEN        1024
+#define CFGCLI_MAX_FILENAME_LEN    1024
 
 /*============================================================================*\
                           Definitions for the formats
 \*============================================================================*/
-#define CFG_SYM_EQUAL           '='
-#define CFG_SYM_ARRAY_START     '['
-#define CFG_SYM_ARRAY_END       ']'
-#define CFG_SYM_ARRAY_SEP       ','
-#define CFG_SYM_COMMENT         '#'
-#define CFG_SYM_NEWLINE         '\\'
+#define CFGCLI_SYM_EQUAL           '='
+#define CFGCLI_SYM_ARRAY_START     '['
+#define CFGCLI_SYM_ARRAY_END       ']'
+#define CFGCLI_SYM_ARRAY_SEP       ','
+#define CFGCLI_SYM_COMMENT         '#'
+#define CFGCLI_SYM_NEWLINE         '\\'
 
-#define CFG_CMD_FLAG            '-'
-#define CFG_CMD_ASSIGN          '='
+#define CFGCLI_CMD_FLAG            '-'
+#define CFGCLI_CMD_ASSIGN          '='
 
 
 /*============================================================================*\
@@ -92,17 +93,17 @@ typedef struct {
   void *params;         /* data structure for storing parameters        */
   void *funcs;          /* data structure for storing function pointers */
   void *error;          /* data structure for storing error messages    */
-} cfg_t;
+} cfgcli_t;
 
 /* Interface for registering configuration parameters. */
 typedef struct {
   int opt;                      /* short command line option            */
   char *lopt;                   /* long command line option             */
   char *name;                   /* name of the parameter                */
-  cfg_dtype_t dtype;            /* data type of the parameter           */
+  cfgcli_dtype_t dtype;            /* data type of the parameter           */
   void *var;                    /* variable for the retrieved value     */
   char *help;                   /* help message                         */
-} cfg_param_t;
+} cfgcli_param_t;
 
 /* Interface for registering command line functions. */
 typedef struct {
@@ -111,7 +112,7 @@ typedef struct {
   void (*func) (void *);        /* pointer to the function              */
   void *args;                   /* pointer to the arguments             */
   char *help;                   /* help message                         */
-} cfg_func_t;
+} cfgcli_func_t;
 
 
 /*============================================================================*\
@@ -119,15 +120,15 @@ typedef struct {
 \*============================================================================*/
 
 /******************************************************************************
-Function `cfg_init`:
+Function `cfgcli_init`:
   Initialise the entry for all parameters and command line functions.
 Return:
   The address of the structure.
 ******************************************************************************/
-cfg_t *cfg_init(void);
+cfgcli_t *cfgcli_init(void);
 
 /******************************************************************************
-Function `cfg_set_params`:
+Function `cfgcli_set_params`:
   Verify and register configuration parameters.
 Arguments:
   * `cfg`:      entry for all configuration parameters;
@@ -136,10 +137,10 @@ Arguments:
 Return:
   Zero on success; non-zero on error.
 ******************************************************************************/
-int cfg_set_params(cfg_t *cfg, const cfg_param_t *param, const int npar);
+int cfgcli_set_params(cfgcli_t *cfg, const cfgcli_param_t *param, const int npar);
 
 /******************************************************************************
-Function `cfg_set_funcs`:
+Function `cfgcli_set_funcs`:
   Verify and register command line functions.
 Arguments:
   * `cfg`:      entry for all command line functions;
@@ -148,10 +149,10 @@ Arguments:
 Return:
   Zero on success; non-zero on error.
 ******************************************************************************/
-int cfg_set_funcs(cfg_t *cfg, const cfg_func_t *func, const int nfunc);
+int cfgcli_set_funcs(cfgcli_t *cfg, const cfgcli_func_t *func, const int nfunc);
 
 /******************************************************************************
-Function `cfg_read_opts`:
+Function `cfgcli_read_opts`:
   Parse command line options.
 Arguments:
   * `cfg`:      entry for the configurations;
@@ -162,11 +163,11 @@ Arguments:
 Return:
   Zero on success; non-zero on error.
 ******************************************************************************/
-int cfg_read_opts(cfg_t *cfg, const int argc, char *const *argv,
+int cfgcli_read_opts(cfgcli_t *cfg, const int argc, char *const *argv,
     const int prior, int *optidx);
 
 /******************************************************************************
-Function `cfg_read_file`:
+Function `cfgcli_read_file`:
   Read configuration parameters from a file.
 Arguments:
   * `cfg`:      entry for the configurations;
@@ -175,10 +176,10 @@ Arguments:
 Return:
   Zero on success; non-zero on error.
 ******************************************************************************/
-int cfg_read_file(cfg_t *cfg, const char *fname, const int prior);
+int cfgcli_read_file(cfgcli_t *cfg, const char *fname, const int prior);
 
 /******************************************************************************
-Function `cfg_is_set`:
+Function `cfgcli_is_set`:
   Check if a variable is set via the command line or files.
 Arguments:
   * `cfg`:      entry of all configurations;
@@ -186,10 +187,10 @@ Arguments:
 Return:
   True if the variable is set; false otherwise.
 ******************************************************************************/
-bool cfg_is_set(const cfg_t *cfg, const void *var);
+bool cfgcli_is_set(const cfgcli_t *cfg, const void *var);
 
 /******************************************************************************
-Function `cfg_get_size`:
+Function `cfgcli_get_size`:
   Return the number of elements for the parsed array.
 Arguments:
   * `cfg`:      entry of all configurations;
@@ -197,52 +198,52 @@ Arguments:
 Return:
   The number of array elements on success; 0 on error.
 ******************************************************************************/
-int cfg_get_size(const cfg_t *cfg, const void *var);
+int cfgcli_get_size(const cfgcli_t *cfg, const void *var);
 
 /******************************************************************************
-Function `cfg_destroy`:
+Function `cfgcli_destroy`:
   Release memory allocated for the configuration parameters.
 Arguments:
   * `cfg`:      pointer to the entry of all configurations.
 ******************************************************************************/
-void cfg_destroy(cfg_t *cfg);
+void cfgcli_destroy(cfgcli_t *cfg);
 
 /******************************************************************************
-Function `cfg_perror`:
+Function `cfgcli_perror`:
   Print the error message if there is an error.
 Arguments:
   * `cfg`:      entry of all configurations;
   * `fp`:       output file stream to write to;
   * `msg`:      string to be printed before the error message.
 ******************************************************************************/
-void cfg_perror(const cfg_t *cfg, FILE *fp, const char *msg);
+void cfgcli_perror(const cfgcli_t *cfg, FILE *fp, const char *msg);
 
 /******************************************************************************
-Function `cfg_pwarn`:
+Function `cfgcli_pwarn`:
   Print the warning messages if there is any, and clean the warnings.
 Arguments:
   * `cfg`:      entry of all configurations;
   * `fp`:       output file stream to write to;
   * `msg`:      string to be printed before the error message.
 ******************************************************************************/
-void cfg_pwarn(cfg_t *cfg, FILE *fp, const char *msg);
+void cfgcli_pwarn(cfgcli_t *cfg, FILE *fp, const char *msg);
 
 /******************************************************************************
-Function `cfg_print_help`:
+Function `cfgcli_print_help`:
   Print help messages based on validated parameters
 Arguments:
   * `cfg`:      entry for all configuration parameters;
 ******************************************************************************/
-void cfg_print_help(cfg_t *cfg);
-void cfg_print_usage(cfg_t *cfg, char *progname);
+void cfgcli_print_help(cfgcli_t *cfg);
+void cfgcli_print_usage(cfgcli_t *cfg, char *progname);
 
 /******************************************************************************
-Function `cfg_print_usage`:
+Function `cfgcli_print_usage`:
   Print usage messages based on validated parameters and provided progname
 Arguments:
   * `cfg`:      entry for all configuration parameters;
   * `progname`: program name to be displayed
 ******************************************************************************/
-void cfg_print_usage(cfg_t *cfg, char *progname);
+void cfgcli_print_usage(cfgcli_t *cfg, char *progname);
 
 #endif
